@@ -1,0 +1,6 @@
+audios/
+node_modules/
+dist/
+
+apiKey.json
+files.json
