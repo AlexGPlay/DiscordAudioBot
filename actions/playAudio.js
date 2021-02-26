@@ -3,7 +3,7 @@ const fs = require("fs");
 const loadFile = require("../util/loadFile");
 
 module.exports = async function playAudio(msg){
-  const [_, audio] = msg.content.split(" ");
+  const [_, audio] = msg.content.split("?");
     
   const voiceChannel = msg.member.voice.channel;
   if(!voiceChannel) return;
@@ -11,11 +11,13 @@ module.exports = async function playAudio(msg){
   const currentData = loadFile();
   if(!(audio in currentData)){
     msg.reply(`No existe ninguna entrada con el nombre ${audio}`);
+    msg.delete();
     return;
   }
 
   const connection = await voiceChannel.join();
   
+  msg.delete();
   const audioPath = path.join(__dirname, '..', currentData[audio]);
   const audioStream = fs.createReadStream(audioPath);
   const dispatcher = connection.play(audioStream);

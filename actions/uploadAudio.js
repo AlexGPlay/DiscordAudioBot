@@ -18,6 +18,7 @@ module.exports = async function uploadAudio(msg){
     const error = "Ya existe una entrada con ese nombre";
     msg.reply(error);
     console.error(error);
+    msg.delete();
     return;
   }
 
@@ -30,6 +31,7 @@ module.exports = async function uploadAudio(msg){
       const success = `Se ha creado una entrada con el nombre ${name}`;
       msg.reply(success);
       console.error(success);
+      msg.delete();
     });
   });
 }

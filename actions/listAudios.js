@@ -2,7 +2,8 @@ const loadFile = require("../util/loadFile")
 
 module.exports = function listAudios(msg){
   const file = loadFile();
-  const entries = Object.keys(file).map(e => `- ${e}`).join("\n");
-  const replyMsg = `Existen las siguientes entradas:\n${entries}`;
+  const entries = Object.keys(file).sort();
+  const replyMsg = `Existen las siguientes entradas:\n${entries.join('\t')}`;
   msg.reply(replyMsg);
+  msg.delete();
 }

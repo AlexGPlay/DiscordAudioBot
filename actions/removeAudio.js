@@ -9,6 +9,7 @@ module.exports = function removeAudio(msg){
     const msgText = `No existe la entrada ${audio}`;
     console.log(msgText);
     msg.reply(msgText);
+    msg.delete();
     return;
   }
 
@@ -20,4 +21,5 @@ module.exports = function removeAudio(msg){
   const msgText = `Se ha eliminado la entrada con nombre ${audio}`;
   console.log(msgText);
   msg.reply(msgText);
+  msg.delete();
 }
