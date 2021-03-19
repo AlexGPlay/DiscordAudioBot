@@ -3,4 +3,5 @@ node_modules/
 dist/
 
 apiKey.json
+azureKeys.json
 files.json
