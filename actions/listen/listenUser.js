@@ -7,8 +7,6 @@ const fs = require("fs");
 const { apiKey, region } = JSON.parse(fs.readFileSync("./azureKeys.json"));
 
 module.exports = async function listenUser(userId, channelId) {
-  await sleep(1000);
-
   const voiceChannel = await client.channels.fetch(channelId);
   if (!voiceChannel) return;
   const connection = await voiceChannel.join();
@@ -40,10 +38,6 @@ module.exports = async function listenUser(userId, channelId) {
     () => console.log("Starting recognizion"),
     err => console.error("Error starting", err)
   );
-
-  // speechRecognizer.recognizing = () => {
-
-  // }
 
   speechRecognizer.recognized = (_, { result }) => {
     if (!result) return;

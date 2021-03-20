@@ -1,8 +1,10 @@
 const audioQueue = require("./audioQueue");
+const filterAudios = require("./filterAudios");
 
 function enqueueListenAudio(audios, channelId) {
-  audios.forEach(audio => audioQueue.add({ audio, channelId }));
-  console.log(`Enqueued audios: ${audios.join(",")}`)
+  const toPlay = filterAudios(audios);
+  toPlay.forEach(audio => audioQueue.add({ audio, channelId }));
+  console.log(`Enqueued audios: ${toPlay.join(",")}`)
 }
 
 module.exports = enqueueListenAudio;

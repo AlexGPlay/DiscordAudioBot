@@ -1,7 +1,8 @@
 const audioQueue = require("./audioQueue");
+const filterAudios = require("./filterAudios");
 
 function enqueueAudio(audioMsg) {
-  const audios = audioMsg.content.split(" ");
+  const audios = filterAudios(audioMsg.content.split(" "));
   const channelId = audioMsg.member.voice.channel.id;
 
   audios.forEach(audio => {
