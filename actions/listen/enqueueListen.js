@@ -1,9 +1,11 @@
-const listenQueue = require("./listenQueue");
+const getQueue = require("./listenQueue");
 
 function enqueueListen(msg) {
   const channelId = msg.member.voice.channel.id;
   const userId = msg.member.id;
-  listenQueue.add({ channelId, userId });
+  const serverId = msg.member.voice.channel.guild.id;
+
+  getQueue(serverId).add({ channelId, userId, serverId });
   msg.delete();
 }
 

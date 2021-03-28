@@ -1,10 +1,19 @@
 const Queue = require('bull');
-const audioQueue = new Queue('audios');
 const playAudio = require("./playAudio");
 
-audioQueue.process(job => {
-  const { audio, channelId } = job.data;
-  return playAudio(audio, channelId);
-});
+const queues = {};
 
-module.exports = audioQueue;
+module.exports = function getQueue(serverId) {
+  if (queues[serverId]) return queues[serverId];
+
+  const audioQueue = new Queue(`audios-${serverId}`);
+
+  audioQueue.process(job => {
+    const { audio, channelId, serverId } = job.data;
+    return playAudio(audio, channelId, serverId);
+  });
+
+  queues[serverId] = audioQueue;
+
+  return audioQueue;
+}
