@@ -22,31 +22,38 @@ module.exports = async function listenUser(userId, channelId, serverId) {
 
   const speechRecognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
 
-  audio.on('data', data => pushStream.write(data));
-  audio.on('end', () => {
+  audio.on("data", (data) => pushStream.write(data));
+  audio.on("end", () => {
     speechRecognizer.stopContinuousRecognitionAsync(
       () => console.log(`Stopped listening on server ${serverId}`),
-      err => console.error(`Error stopping listening on server ${serverId}`, err)
+      (err) => console.error(`Error stopping listening on server ${serverId}`, err)
     );
     pushStream.close();
   });
 
   speechRecognizer.startContinuousRecognitionAsync(
     () => console.log(`Listening on server ${serverId}`),
-    err => console.error(`Error listening on server ${serverId}`, err)
+    (err) => console.error(`Error listening on server ${serverId}`, err)
   );
 
   speechRecognizer.recognized = (_, { result }) => {
     if (!result) return;
     const keywords = ["oido", "oidos"];
-    const text = result.privText.toLowerCase().split(" ").map(e => e.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, ""));
+    const text = result.privText
+      .toLowerCase()
+      .split(" ")
+      .map((e) =>
+        e
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z]/g, "")
+      );
     console.log(`Detected text on server ${serverId}`, text);
-    const idx = text.findIndex(word => keywords.includes(word));
+    const idx = text.findIndex((word) => keywords.includes(word));
     console.log("Id", idx);
     if (idx === -1) return;
-    const possibleAudios = text.slice(idx + 1).map(audio => `?${audio}`);
+    const possibleAudios = text.slice(idx + 1).map((audio) => `?${audio}`);
     console.log(`To push audios on server ${serverId}`, possibleAudios);
     enqueueListenAudio(possibleAudios, channelId, serverId);
   };
-
-}
+};

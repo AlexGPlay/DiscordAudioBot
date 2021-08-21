@@ -1,6 +1,7 @@
 audios/
 node_modules/
 dist/
+tmp/
 
 apiKey.json
 azureKeys.json
