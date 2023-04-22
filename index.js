@@ -12,7 +12,7 @@ client.on("ready", () => {
   client.user.setActivity("memes", { type: "LISTENING" });
 });
 
-client.on("message", async (msg) => {
+client.on("messageCreate", async (msg) => {
   if (msg.content.startsWith("?upload")) uploadAudio(msg);
   else if (msg.content.startsWith("?remove")) removeAudio(msg);
   else if (msg.content.trim() === "?list") listAudios(msg);

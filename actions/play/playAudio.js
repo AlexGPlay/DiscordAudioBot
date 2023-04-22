@@ -1,5 +1,10 @@
+const {
+  createAudioPlayer,
+  createAudioResource,
+  joinVoiceChannel,
+  AudioPlayerStatus,
+} = require("@discordjs/voice");
 const path = require("path");
-const fs = require("fs");
 const loadFile = require("../../util/loadFile");
 const client = require("../../discord");
 
@@ -15,21 +20,33 @@ module.exports = function playAudio(audioMsg, channelId, serverId) {
       reject();
     }
 
-    const connection = await voiceChannel.join();
-
-    const audioPath = path.join(__dirname, '..', '..', currentData[audio]);
-    const audioStream = fs.createReadStream(audioPath);
-    const dispatcher = connection.play(audioStream);
-
-    dispatcher.on('start', () => console.log(`${audio} is now playing on server ${serverId}`));
-    dispatcher.on('finish', () => {
-      console.log(`${audio} has finished playing on server ${serverId}`);
-      resolve();
+    const connection = joinVoiceChannel({
+      channelId: voiceChannel.id,
+      guildId: voiceChannel.guild.id,
+      adapterCreator: voiceChannel.guild.voiceAdapterCreator,
     });
 
-    dispatcher.on('error', (error) => {
+    const audioPath = path.join(__dirname, "..", "..", currentData[audio]);
+    const audioResource = createAudioResource(audioPath);
+    const audioPlayer = createAudioPlayer();
+
+    connection.subscribe(audioPlayer);
+    audioPlayer.play(audioResource);
+
+    audioPlayer.on("stateChange", (_, newState) => {
+      const isFinish = newState.status === AudioPlayerStatus.Idle;
+      const isStart = newState.status === AudioPlayerStatus.Playing;
+
+      if (isStart) console.log(`${audio} is now playing on server ${serverId}`);
+      if (isFinish) {
+        console.log(`${audio} has finished playing on server ${serverId}`);
+        resolve();
+      }
+    });
+
+    audioPlayer.on("error", (error) => {
       console.error(error);
       reject();
     });
   });
-}
+};
