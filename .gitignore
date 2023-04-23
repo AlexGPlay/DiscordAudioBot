@@ -6,3 +6,4 @@ tmp/
 apiKey.json
 azureKeys.json
 files.json
+dump.rdb
